@@ -1,0 +1,432 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     18546,        424]
+NotebookOptionsPosition[     17897,        404]
+NotebookOutlinePosition[     18243,        419]
+CellTagsIndexPosition[     18200,        416]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["\<\
+Mid-Semester Project 
+Hongyi Gu, Haoyan Deng\
+\>", "Title",
+ CellChangeTimes->{{3.7506347759454384`*^9, 
+  3.7506348218082533`*^9}},ExpressionUUID->"4f1e1053-3ddf-4459-ab85-\
+91804a1db4a2"],
+
+Cell["", "Subsection",
+ CellChangeTimes->{{3.7506348687535653`*^9, 
+  3.750634874468696*^9}},ExpressionUUID->"9f81072c-257e-495c-81b1-\
+b471bd3eb961"],
+
+Cell[CellGroupData[{
+
+Cell["", "Section",ExpressionUUID->"5b314709-491c-4084-925a-8e66122ca797"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{
+    "The", " ", "following", " ", "function", " ", "takes", " ", "two", " ", 
+     "imagedata", " ", "as", " ", "inputs"}], ",", " ", 
+    RowBox[{
+    "and", " ", "it", " ", "calcualates", " ", "the", " ", "correspondance", 
+     " ", "of", " ", "the", " ", "top", " ", "parts", " ", "of", " ", "the", 
+     " ", "two", " ", 
+     RowBox[{"images", ".", " ", "It"}], " ", "returns", " ", "the", " ", 
+     "distance", "\[IndentingNewLine]", "measure", " ", "of", " ", "the", " ",
+      "two", " ", "input", " ", "weave", " ", "map", " ", "image", " ", 
+     RowBox[{"data", ".", " ", "The"}], " ", "return", " ", "value", " ", 
+     "is", " ", "multiplied", " ", "by", " ", "a", " ", "scale", " ", 
+     "factor", " ", "to", " ", "better", " ", "show", " ", "the", " ", 
+     "mathches", " ", "of", " ", "the", " ", "two", " ", 
+     RowBox[{"images", ".", " ", "Based"}], " ", "on", " ", "our", " ", 
+     "test", " ", "results"}], ",", " ", 
+    RowBox[{
+    "if", " ", "the", " ", "return", " ", "value", " ", "of", " ", "the", " ",
+      "function", " ", "is", " ", "less", " ", "than", " ", "1"}], ",", " ", 
+    RowBox[{
+    "the", " ", "two", " ", "images", " ", "are", " ", "considered", " ", "a",
+      " ", "good", " ", 
+     RowBox[{"match", ".", " ", "If"}], " ", "the", " ", "return", " ", 
+     "value", " ", "is", " ", "greater", " ", "than", " ", "1"}], ",", " ", 
+    RowBox[{
+    "the", " ", "two", " ", "images", " ", "are", " ", "considered", " ", 
+     "as", " ", "no", " ", 
+     RowBox[{"match", ".", " ", "In"}], " ", "the", " ", "function"}], ",", 
+    " ", 
+    RowBox[{
+    "MedianFilter", " ", "is", " ", "used", " ", "for", " ", "denoising", " ",
+      "the", " ", "the", " ", "two", " ", 
+     RowBox[{"images", ".", " ", "EuclideanDistance"}], " ", "is", " ", 
+     "used", " ", "for", " ", "distance", " ", 
+     RowBox[{"calculation", "."}]}]}], "*)"}], "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"distWeaveMapsHGD", "[", 
+    RowBox[{"mat1_", ",", "mat2_"}], "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", "}"}], ",", "        ", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"img1", "=", "mat1"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"img2", "=", "mat2"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "it", " ", "performs", " ", "preprocessing", " ", "that", " ", 
+        "denoises", " ", "the", " ", "two", " ", "input", " ", "images", " ", 
+        "mainly", " ", "along", " ", "the", " ", "horizontal", " ", "axis"}], 
+       " ", "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"img1", " ", "=", " ", 
+       RowBox[{"MedianFilter", "[", 
+        RowBox[{"img1", ",", 
+         RowBox[{"{", 
+          RowBox[{"30", ",", "2"}], "}"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"img2", " ", "=", " ", 
+       RowBox[{"MedianFilter", "[", 
+        RowBox[{"img2", ",", 
+         RowBox[{"{", 
+          RowBox[{"30", ",", "2"}], "}"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"img1size", " ", "=", " ", 
+       RowBox[{"Dimensions", "[", "img1", "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"img2size", " ", "=", " ", 
+       RowBox[{"Dimensions", "[", "img2", "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"img1ylen", " ", "=", " ", 
+       RowBox[{"img1size", " ", "[", 
+        RowBox[{"[", "1", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"img1xlen", " ", "=", " ", 
+       RowBox[{"img1size", "[", 
+        RowBox[{"[", "2", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"img2ylen", " ", "=", " ", 
+       RowBox[{"img2size", " ", "[", 
+        RowBox[{"[", "1", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"img2xlen", " ", "=", " ", 
+       RowBox[{"img2size", "[", 
+        RowBox[{"[", "2", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "Getting", " ", "the", " ", "horizontal", " ", "smaller", " ", "value",
+         " ", "of", " ", "the", " ", "two", " ", "sizes", " ", "for", " ", 
+        "later", " ", "calculations"}], " ", "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"lenCorrx", "=", 
+       RowBox[{"Min", "[", 
+        RowBox[{"img1xlen", ",", "img2xlen"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "Getting", " ", "the", " ", "vertical", " ", "smaller", " ", "value", 
+        " ", "of", " ", "the", " ", "two", " ", "sizes", " ", "for", " ", 
+        "later", " ", "calculations"}], " ", "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"lenCorry", "=", 
+       RowBox[{"Min", "[", 
+        RowBox[{"img1ylen", ",", "img2ylen"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "The", " ", "number", " ", "of", " ", "iterations", " ", "used", " ", 
+        "for", " ", "further", " ", "distance", " ", "calculations", " ", 
+        "at", " ", "a", " ", "certain", " ", "position", " ", "in", " ", 
+        "the", " ", "horizontal", " ", "axis"}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{"numrow", " ", "=", " ", 
+       RowBox[{"Floor", "[", 
+        RowBox[{"lenCorry", "/", "30"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"mindistance", " ", "=", " ", "Infinity"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{
+        "Determines", " ", "which", " ", "image", " ", "has", " ", "the", " ",
+          "smaller", " ", "horizontal", " ", "length", " ", "then", " ", 
+         "assign", " ", "that", " ", "length", " ", "to", " ", "img1"}], ",", 
+        " ", 
+        RowBox[{
+        "which", " ", "makes", " ", "the", " ", "longer", " ", "one", " ", 
+         "img2"}]}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{"img2xlen", "==", "lenCorrx"}], ",", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"temp", " ", "=", "img1"}], ";", "\[IndentingNewLine]", 
+         RowBox[{"img1", "=", "img2"}], ";", "\[IndentingNewLine]", 
+         RowBox[{"img2", "=", "temp"}], ";", "\[IndentingNewLine]", 
+         RowBox[{"img1size", " ", "=", " ", 
+          RowBox[{"Dimensions", "[", "img1", "]"}]}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"img2size", " ", "=", " ", 
+          RowBox[{"Dimensions", "[", "img2", "]"}]}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"img1ylen", " ", "=", " ", 
+          RowBox[{"img1size", " ", "[", 
+           RowBox[{"[", "1", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"img1xlen", " ", "=", " ", 
+          RowBox[{"img1size", "[", 
+           RowBox[{"[", "2", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"img2ylen", " ", "=", " ", 
+          RowBox[{"img2size", " ", "[", 
+           RowBox[{"[", "1", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"img2xlen", " ", "=", " ", 
+          RowBox[{"img2size", "[", 
+           RowBox[{"[", "2", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"lenCorrx", "=", 
+          RowBox[{"Min", "[", 
+           RowBox[{"img1xlen", ",", "img2xlen"}], "]"}]}]}]}], 
+       "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "The", " ", "following", " ", "three", " ", "for", " ", "loops", " ", 
+        "take", " ", "the", " ", "multiple", " ", "rows", " ", "of", " ", 
+        "the", " ", "two", " ", "images", "  ", "and", " ", "take", " ", 
+        "multiple", " ", "placement", " ", "along", " ", "the", " ", 
+        "horziontal", " ", "axis", " ", "of", " ", "the", " ", "those", " ", 
+        "rows", " ", "for", " ", "distance", " ", 
+        RowBox[{"measures", ".", " ", "The"}], " ", "final", " ", "returned", 
+        " ", "result", " ", "is", " ", "the", " ", "minimum", " ", "distance",
+         " ", "of", " ", "the", " ", "all", " ", 
+        RowBox[{"cases", "."}]}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"For", "[", 
+       RowBox[{
+        RowBox[{"k", " ", "=", "1"}], ",", 
+        RowBox[{"k", "<=", 
+         RowBox[{"img2xlen", "-", "lenCorrx", "+", "1"}]}], " ", ",", 
+        RowBox[{"k", "++"}], ",", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"sumdistance", " ", "=", " ", "0"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"averagedistance", " ", "=", " ", "0"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"For", "[", 
+          RowBox[{
+           RowBox[{"i", " ", "=", "1"}], ",", " ", 
+           RowBox[{"i", " ", "<=", "numrow"}], " ", ",", 
+           RowBox[{"i", "++"}], ",", "\[IndentingNewLine]", 
+           RowBox[{"For", "[", 
+            RowBox[{
+             RowBox[{"j", " ", "=", "1"}], ",", 
+             RowBox[{"j", " ", "<=", "numrow"}], " ", ",", 
+             RowBox[{"j", "++"}], ",", "\[IndentingNewLine]", 
+             RowBox[{
+              RowBox[{"img1part", "=", 
+               RowBox[{"img1", "[", 
+                RowBox[{"[", 
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{"(", 
+                    RowBox[{"i", "-", "1"}], ")"}], "*", "4"}], "+", "1"}], 
+                 "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+              RowBox[{"img2part", "=", 
+               RowBox[{"img2", "[", 
+                RowBox[{"[", 
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{"j", "-", "1"}], ")"}], "*", "4"}], "+", "1"}], 
+                  ",", 
+                  RowBox[{"k", ";;", 
+                   RowBox[{"k", "+", "lenCorrx", "-", "1"}]}]}], "]"}], 
+                "]"}]}], ";", "\[IndentingNewLine]", 
+              RowBox[{"currdistance", " ", "=", " ", 
+               RowBox[{
+                RowBox[{"EuclideanDistance", "[", 
+                 RowBox[{"img1part", ",", "img2part"}], "]"}], "/", 
+                "lenCorrx"}]}], ";", "\[IndentingNewLine]", 
+              RowBox[{"mindistance", " ", "=", " ", 
+               RowBox[{"Min", "[", 
+                RowBox[{"currdistance", ",", "mindistance"}], "]"}]}]}]}], 
+            "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}]}], 
+          "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]", 
+         "\[IndentingNewLine]", 
+         RowBox[{"mindistance", " ", "=", " ", 
+          RowBox[{"Min", "[", 
+           RowBox[{"currdistance", ",", "mindistance"}], "]"}]}]}]}], 
+       "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"For", "[", 
+       RowBox[{
+        RowBox[{"k", " ", "=", "1"}], ",", 
+        RowBox[{"k", "<", 
+         RowBox[{"lenCorrx", "-", 
+          RowBox[{"Floor", "[", 
+           RowBox[{"lenCorrx", "/", "2"}], "]"}]}]}], ",", 
+        RowBox[{"k", "++"}], ",", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"sumdistance", " ", "=", " ", "0"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"averagedistance", " ", "=", " ", "0"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"For", "[", 
+          RowBox[{
+           RowBox[{"i", " ", "=", "1"}], ",", " ", 
+           RowBox[{"i", " ", "<=", "numrow"}], " ", ",", 
+           RowBox[{"i", "++"}], ",", "\[IndentingNewLine]", 
+           RowBox[{"For", "[", 
+            RowBox[{
+             RowBox[{"j", " ", "=", "1"}], ",", 
+             RowBox[{"j", " ", "<=", "numrow"}], " ", ",", 
+             RowBox[{"j", "++"}], ",", "\[IndentingNewLine]", 
+             RowBox[{
+              RowBox[{"img1part", "=", 
+               RowBox[{"img1", "[", 
+                RowBox[{"[", 
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{"i", "-", "1"}], ")"}], "*", "4"}], "+", "1"}], 
+                  ",", 
+                  RowBox[{"1", ";;", 
+                   RowBox[{"lenCorrx", "-", "k"}]}]}], "]"}], "]"}]}], ";", 
+              "\[IndentingNewLine]", 
+              RowBox[{"img2part", "=", 
+               RowBox[{"img2", "[", 
+                RowBox[{"[", 
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{"j", "-", "1"}], ")"}], "*", "4"}], "+", "1"}], 
+                  ",", 
+                  RowBox[{
+                   RowBox[{"img2xlen", "-", "lenCorrx", "+", "1", "+", "k"}], 
+                   ";;", "img2xlen"}]}], "]"}], "]"}]}], ";", 
+              "\[IndentingNewLine]", 
+              RowBox[{"currdistance", " ", "=", " ", 
+               RowBox[{
+                RowBox[{"EuclideanDistance", "[", 
+                 RowBox[{"img1part", ",", "img2part"}], "]"}], "/", 
+                RowBox[{"(", 
+                 RowBox[{"lenCorrx", "-", "k"}], ")"}]}]}], ";", 
+              "\[IndentingNewLine]", 
+              RowBox[{"mindistance", " ", "=", " ", 
+               RowBox[{"Min", "[", 
+                RowBox[{"currdistance", ",", "mindistance"}], "]"}]}]}]}], 
+            "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}]}], 
+          "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]", 
+         "\[IndentingNewLine]", 
+         RowBox[{"mindistance", " ", "=", " ", 
+          RowBox[{"Min", "[", 
+           RowBox[{"currdistance", ",", "mindistance"}], "]"}]}]}]}], 
+       "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"For", "[", 
+       RowBox[{
+        RowBox[{"k", " ", "=", 
+         RowBox[{
+          RowBox[{"Floor", "[", 
+           RowBox[{"lenCorrx", "/", "2"}], "]"}], "+", "1"}]}], ",", 
+        RowBox[{"k", "<", "lenCorrx"}], ",", 
+        RowBox[{"k", "++"}], ",", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"sumdistance", " ", "=", " ", "0"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"averagedistance", " ", "=", " ", "0"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"For", "[", 
+          RowBox[{
+           RowBox[{"i", " ", "=", "1"}], ",", " ", 
+           RowBox[{"i", " ", "<=", "numrow"}], " ", ",", 
+           RowBox[{"i", "++"}], ",", "\[IndentingNewLine]", 
+           RowBox[{"For", "[", 
+            RowBox[{
+             RowBox[{"j", " ", "=", "1"}], ",", 
+             RowBox[{"j", " ", "<=", "numrow"}], " ", ",", 
+             RowBox[{"j", "++"}], ",", "\[IndentingNewLine]", 
+             RowBox[{
+              RowBox[{"img1part", "=", 
+               RowBox[{"img1", "[", 
+                RowBox[{"[", 
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{"i", "-", "1"}], ")"}], "*", "4"}], "+", "1"}], 
+                  ",", 
+                  RowBox[{
+                   RowBox[{"lenCorrx", "-", "k", "+", "1"}], ";;", 
+                   "lenCorrx"}]}], "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+              RowBox[{"img2part", "=", 
+               RowBox[{"img2", "[", 
+                RowBox[{"[", 
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{"j", "-", "1"}], ")"}], "*", "4"}], "+", "1"}], 
+                  ",", 
+                  RowBox[{"1", ";;", "k"}]}], "]"}], "]"}]}], ";", 
+              "\[IndentingNewLine]", 
+              RowBox[{"currdistance", " ", "=", " ", 
+               RowBox[{
+                RowBox[{"EuclideanDistance", "[", 
+                 RowBox[{"img1part", ",", "img2part"}], "]"}], "/", "k"}]}], 
+              ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+              RowBox[{"mindistance", " ", "=", " ", 
+               RowBox[{"Min", "[", 
+                RowBox[{"currdistance", ",", "mindistance"}], "]"}]}]}]}], 
+            "\[IndentingNewLine]", "]"}]}], "\[IndentingNewLine]", "]"}]}]}], 
+       "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "Scale", " ", "the", " ", "minimum", " ", "distance", " ", "by", " ", 
+        "a", " ", "factor", " ", "of", " ", "35", " ", "to", " ", "better", 
+        " ", "show", " ", "the", " ", "mathches", " ", "of", " ", "the", " ", 
+        "two", " ", "images"}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"mindistance", "*", "35"}]}]}], "\[IndentingNewLine]", 
+    "]"}]}]}]], "Input",
+ CellChangeTimes->{{3.7506348446386337`*^9, 3.7506348613122835`*^9}, {
+   3.7506349391872487`*^9, 3.750634954422309*^9}, {3.7506350021631355`*^9, 
+   3.750635378759268*^9}, {3.7506354591767235`*^9, 3.750635782088972*^9}, 
+   3.75063583032351*^9, {3.7506359221187716`*^9, 3.750635977628769*^9}, {
+   3.7506360812012577`*^9, 
+   3.7506363614906855`*^9}},ExpressionUUID->"255a6d89-b2ab-49f9-92b3-\
+69d56ef7628d"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{852, 868},
+WindowMargins->{{Automatic, -7}, {Automatic, 0}},
+FrontEndVersion->"11.2 for Microsoft Windows (64-bit) (September 10, 2017)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 199, 6, 156, "Title",ExpressionUUID->"4f1e1053-3ddf-4459-ab85-91804a1db4a2"],
+Cell[782, 30, 150, 3, 53, "Subsection",ExpressionUUID->"9f81072c-257e-495c-81b1-b471bd3eb961"],
+Cell[CellGroupData[{
+Cell[957, 37, 74, 0, 53, "Section",ExpressionUUID->"5b314709-491c-4084-925a-8e66122ca797"],
+Cell[1034, 39, 16835, 361, 1834, "Input",ExpressionUUID->"255a6d89-b2ab-49f9-92b3-69d56ef7628d"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
